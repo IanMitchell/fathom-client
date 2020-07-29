@@ -76,6 +76,7 @@ Tracks a pageview.
 - `opts` - An Object of options:
   - `url` - When set, overrides `window.location`.
   - `referrer` - When set, overrides `document.referrer`.
+- `attributes` - An Object of custom attributes to add to the `<script>` tag
 
 #### Example
 
@@ -123,9 +124,13 @@ Router.events.on('routeChangeComplete', () => {
 function App({ Component, pageProps }) {
   // Initialize Fathom when the app loads
   useEffect(() => {
-    Fathom.load('MY_FATHOM_ID', {
-      includedDomains: ['yourwebsite.com']
-    });
+    Fathom.load(
+      'MY_FATHOM_ID',
+      {
+        includedDomains: ['yourwebsite.com']
+      },
+      { key: 'fathom ' }
+    );
   }, []);
 
   return <Component {...pageProps} />;

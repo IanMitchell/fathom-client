@@ -19,6 +19,10 @@ export type LoadOptions = {
   spa?: 'auto' | 'history' | 'hash';
 };
 
+export type Attributes = {
+  [key: string]: string;
+};
+
 type FathomCommand =
   | { type: 'trackPageview'; opts: PageViewOptions | undefined }
   | { type: 'trackGoal'; code: string; cents: number };
@@ -45,7 +49,7 @@ const enqueue = (command: FathomCommand): void => {
  */
 const flushQueue = (): void => {
   window.__fathomClientQueue = window.__fathomClientQueue || [];
-  window.__fathomClientQueue.forEach(command => {
+  window.__fathomClientQueue.forEach((command) => {
     switch (command.type) {
       case 'trackPageview':
         if (command.opts) {
@@ -63,7 +67,11 @@ const flushQueue = (): void => {
   window.__fathomClientQueue = [];
 };
 
-export const load = (siteId: string, opts?: LoadOptions): void => {
+export const load = (
+  siteId: string,
+  opts?: LoadOptions,
+  attributes?: Attributes
+): void => {
   let tracker = document.createElement('script');
   let firstScript = document.getElementsByTagName('script')[0];
 
@@ -83,6 +91,11 @@ export const load = (siteId: string, opts?: LoadOptions): void => {
     if (opts.excludedDomains)
       tracker.setAttribute('excluded-domains', opts.excludedDomains.join(','));
     if (opts.spa) tracker.setAttribute('spa', opts.spa);
+  }
+  if (attributes) {
+    Object.entries(attributes).forEach(([key, value]) =>
+      tracker.setAttribute(key, value)
+    );
   }
   tracker.onload = flushQueue;
   firstScript.parentNode.insertBefore(tracker, firstScript);

@@ -37,6 +37,22 @@ describe('load', () => {
     expect(fathomScript.getAttribute('honor-dnt')).toBe(null);
   });
 
+  it('passes on script custom attributes', () => {
+    const firstScript = document.createElement('script');
+    document.body.appendChild(firstScript);
+    Fathom.load(
+      'abcde123',
+      {
+        url: 'https://bobheadxi.dev/fathom.js'
+      },
+      { key: 'nextjs-fathom' }
+    );
+
+    const fathomScript = document.getElementById('fathom-script');
+    expect(fathomScript.src).toBe('https://bobheadxi.dev/fathom.js');
+    expect(fathomScript.getAttribute('key')).toBe('nextjs-fathom');
+  });
+
   it('runs the queue after load', () => {
     Fathom.trackPageview();
 
